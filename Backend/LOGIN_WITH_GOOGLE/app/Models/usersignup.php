@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class usersignup extends Model
 {
-    protected $fillable = ['username', 'email', 'password','otp'];
+    protected $fillable = ['username', 'email', 'password','otp','otp_expires_at'];
 
 }

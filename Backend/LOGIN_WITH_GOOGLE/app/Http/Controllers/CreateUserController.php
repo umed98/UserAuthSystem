@@ -13,66 +13,68 @@ use Mail;
 class CreateUserController extends Controller
 {
     public function register(Request $request)
-{
-    try {
+    {
+        try {
+            // Validate input
+            $request->validate([
+                'username' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:usersignups',
+                'password' => 'required|string|min:6',
+            ]);
+            $otp = rand(100000, 999999);
+            $user = usersignup::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => $request->password,
+                'otp' => $otp,
+                'otp_expires_at' => now()->addMinutes(30), 
+                'is_verified' => false
+            ]);
+            // Send OTP email
+            Mail::to($user->email)->send(new SendOtp($otp, $user->username));
+            return response()->json([
+                'message' => 'Registration successful. OTP sent to email.',
+                'user' => $user,
+            ], 201);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Something went wrong.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verifyOtp(Request $request)
+    {
         $request->validate([
-            'username' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:usersignups',
-            'password' => 'required|string|min:6',
+            'otp' => 'required|digits:6',
         ]);
-
-        $otp = rand(100000, 999999);
-
-        $user = usersignup::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => $request->password,
-            'otp' => $otp,
-        ]);
-
-        // Send OTP email
-        Mail::to($user->email)->send(new SendOtp($otp, $user->username));
-
+    
+     
+        $user = usersignup::where('otp', $request->otp)->first();
+    
+        if (!$user) {
+            return response()->json([
+                'message' => 'Invalid OTP.',
+            ], 401);
+        }
+        if (now()->greaterThan($user->otp_expires_at)) {
+            return response()->json([
+                'message' => 'OTP has expired.',
+            ], 401);
+        }
+        
+        $user->is_verified = true;
+        $user->otp = null;
+        $user->otp_expires_at = null; 
+        $user->save();
+    
         return response()->json([
-            'message' => 'Registration successful. OTP sent to email.',
+            'message' => 'Email verification successful.',
             'user' => $user,
-        ], 201);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Something went wrong.',
-            'error' => $e->getMessage()
-        ], 500);
+        ]);
     }
-}
-
-public function verifyOtp(Request $request)
-{
-    $request->validate([
-      
-        'otp' => 'required|digits:6',
-    ]);
-
-    $user = usersignup::where('otp', $request->otp)
-                      ->first();
-
-    if (!$user) {
-        return response()->json([
-            'message' => 'Invalid OTP.',
-        ], 401);
-    }
-
-    // Mark as verified
-    $user->is_verified = true;
-    $user->otp = null; // Optional: clear OTP after successful verification
-    $user->save();
-
-    return response()->json([
-        'message' => 'Email verification successful.',
-        'user' => $user,
-    ]);
-}
-
 
 
 // Login Function 
