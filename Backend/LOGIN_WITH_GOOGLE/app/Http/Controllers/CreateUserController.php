@@ -127,7 +127,8 @@ class CreateUserController extends Controller
             }
             $token = base64_encode($githubUser->email . '|' . now());
     
-            return redirect()->away("http://localhost:5173/");
+            return redirect()->away("http://localhost:5173/home?username=" . urlencode($user->username));
+
 
         } catch (\Exception $e) {
             return response()->json([
@@ -161,10 +162,12 @@ class CreateUserController extends Controller
                     'password' => '',
                 ]);
             }
+    
             $token = base64_encode($googleUser->email . '|' . now());
     
-            return redirect()->away("http://localhost:5173/");
-
+            // Redirect with query parameters
+            return redirect()->away("http://localhost:5173/home?username=" . urlencode($user->username));
+    
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Google login failed!',
@@ -172,6 +175,7 @@ class CreateUserController extends Controller
             ], 500);
         }
     }
+    
     
     
 }

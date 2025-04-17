@@ -1,88 +1,20 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"
 
 const Login = () => {
+  const { login, signInWithGoogle, signInWithGithub, authError, authLoading, fieldErrors } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState({});
-  const navigate = useNavigate();
-
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
-
-    setFieldErrors((prev) => ({
-      ...prev,
-      [e.target.name]: "",
-    }));
-    setError("");
-  };
-
-  const validateForm = () => {
-    const errors = {};
-
-    if (!formData.email) {
-      errors.email = "Email is required.";
-    } else if (!emailRegex.test(formData.email)) {
-      errors.email = "Please enter a valid email.";
-    }
-
-    if (!formData.password) {
-      errors.password = "Password is required.";
-    }
-
-    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setFieldErrors(validationErrors);
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/login",
-        formData
-      );
-
-      // Assuming the response contains a token and user data
-      const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      // Redirect to home or dashboard
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Try again.");
-    }
-  };
-
-  const handleGoogleSignup = async () => {
-    try {
-      const res = await axios.get("http://127.0.0.1:8000/api/auth/google");
-      window.location.href = res.data.url;
-    } catch (error) {
-      console.error("Google login redirect error:", error);
-    }
-  };
-
-  const handleGithubSignup = async () => {
-    try {
-      const res = await axios.get("http://127.0.0.1:8000/api/auth/github");
-      window.location.href = res.data.url;
-    } catch (error) {
-      console.error("Github login redirect error:", error);
-    }
+    await login(formData);
   };
 
   return (
@@ -94,7 +26,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email">Email</label>
+            <label className="font-medium" htmlFor="email">Email</label>
             <input
               name="email"
               type="email"
@@ -113,7 +45,7 @@ const Login = () => {
           </div>
 
           <div>
-            <label htmlFor="password">Password</label>
+            <label className="font-medium" htmlFor="password">Password</label>
             <input
               name="password"
               type="password"
@@ -133,13 +65,13 @@ const Login = () => {
             )}
           </div>
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
 
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700"
           >
-            Login
+            {authLoading ? "Logging In..." : "Login"}
           </button>
         </form>
 
@@ -147,8 +79,8 @@ const Login = () => {
 
         <div className="flex justify-between gap-3">
           <button
-            onClick={handleGoogleSignup}
-            className="flex justify-center items-center gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50"
+            onClick={signInWithGoogle}
+            className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -176,8 +108,8 @@ const Login = () => {
             <span>Google</span>
           </button>
           <button
-            onClick={handleGithubSignup}
-            className="flex justify-center items-center gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50"
+            onClick={signInWithGithub}
+            className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -192,7 +124,7 @@ const Login = () => {
             </svg>
             <span>Github</span>
           </button>
-          <button className="flex justify-center items-center gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50">
+          <button className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"

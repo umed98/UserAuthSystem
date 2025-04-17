@@ -21,7 +21,7 @@ const OtpVerification = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/"); // Go to home or wherever you want
+      navigate("/home"); // Go to home or wherever you want
 
     } catch (err) {
       setError(err.response?.data?.message || "Invalid OTP. Please try again.");
