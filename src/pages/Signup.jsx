@@ -22,11 +22,42 @@ const Signup = () => {
     }));
   };
 
+//Validation for fields
+  const validate = () => {
+    const { username, email, password } = formData;
+  
+    const usernameRegex = /^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]{3,20}(?<![_.])$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+  
+    if (!usernameRegex.test(username)) {
+      setError("Username must be 3-20 characters, no special characters except '.' or '_'");
+      return false;
+    }
+  
+    if (!emailRegex.test(email)) {
+      setError("Invalid email address");
+      return false;
+    }
+  
+    if (!passwordRegex.test(password)) {
+      setError("Password must be at least 8 characters, include uppercase, lowercase, number, and special character");
+      return false;
+    }
+  
+    return true;
+  };
+
+
+  //Submit Function
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-
+  
+    if (!validate()) return;
+  
+    setLoading(true);
+  
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/register", formData);
       console.log("Signup success:", response.data);
@@ -38,7 +69,8 @@ const Signup = () => {
       setLoading(false);
     }
   };
-
+  
+//Google Signup
   const handleGoogleSignup = async () => {
     try {
       const res = await axios.get("http://127.0.0.1:8000/api/auth/google");
@@ -48,6 +80,7 @@ const Signup = () => {
     }
   };
 
+  //Github Signup
   const handleGithubSignup = async () => {
     try {
       const res = await axios.get("http://127.0.0.1:8000/api/auth/github");
@@ -56,8 +89,8 @@ const Signup = () => {
       console.error("Github login redirect error:", error);
     }
   };
-  
 
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
