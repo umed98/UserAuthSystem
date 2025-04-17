@@ -1,8 +1,15 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const { login, signInWithGoogle, signInWithGithub, authError, authLoading, fieldErrors } = useAuth();
+  const {
+    login,
+    signInWithGoogle,
+    signInWithGithub,
+    authError,
+    authLoading,
+    fieldErrors,
+  } = useAuth();
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
@@ -19,21 +26,21 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Login to Your Account
-        </h2>
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-lg">
+        <h2 className="text-3xl font-medium mb-6 ">Login to Your Account</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="font-medium" htmlFor="email">Email</label>
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-lg" htmlFor="email">
+              Email
+            </label>
             <input
               name="email"
               type="email"
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 ${
+              className={`w-full px-4 py-[10px] border rounded-lg focus:outline-none focus:ring-2 ${
                 fieldErrors.email
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-400 focus:ring-blue-500"
@@ -44,15 +51,17 @@ const Login = () => {
             )}
           </div>
 
-          <div>
-            <label className="font-medium" htmlFor="password">Password</label>
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-lg" htmlFor="password">
+              Password
+            </label>
             <input
               name="password"
               type="password"
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 ${
+              className={`w-full px-4 py-[10px] border rounded-lg focus:outline-none focus:ring-2 ${
                 fieldErrors.password
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-400 focus:ring-blue-500"
@@ -65,22 +74,28 @@ const Login = () => {
             )}
           </div>
 
-          {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
+          {authError && (
+            <p className="text-red-500 text-sm text-center">{authError}</p>
+          )}
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-[10px] rounded-lg hover:bg-blue-700 mt-2 cursor-pointer"
           >
             {authLoading ? "Logging In..." : "Login"}
           </button>
         </form>
 
-        <div className="my-4 text-center text-gray-500">or continue with</div>
+        <div className="flex items-center justify-between my-4 text-center text-gray-500">
+          <div className="h-[1px] w-[32%] bg-gray-300"></div>
+          <span>or continue with</span>
+          <div className="h-[1px] w-[32%] bg-gray-300"></div>
+        </div>
 
         <div className="flex justify-between gap-3">
           <button
             onClick={signInWithGoogle}
-            className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50"
+            className="flex justify-center items-center shadow-sm cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-lg py-2 hover:bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +124,7 @@ const Login = () => {
           </button>
           <button
             onClick={signInWithGithub}
-            className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50"
+            className="flex justify-center items-center shadow-sm cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-lg py-2 hover:bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +139,7 @@ const Login = () => {
             </svg>
             <span>Github</span>
           </button>
-          <button className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50">
+          <button className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-lg py-2 hover:bg-gray-50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"

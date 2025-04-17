@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const Signup = () => {
-  const { signup, signInWithGoogle, signInWithGithub, authError, authLoading } = useAuth();
+  const { signup, signInWithGoogle, signInWithGithub, authError, authLoading } =
+    useAuth();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -24,37 +25,78 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Create an Account</h2>
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-lg">
+        <h2 className="text-3xl font-medium mb-6">Create an Account</h2>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="font-medium" htmlFor="username">Username</label>
-          <input name="username" type="text" placeholder="Username" value={formData.username} onChange={handleChange} className="w-full px-4 py-2 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-lg" htmlFor="username">
+              Username
+            </label>
+            <input
+              name="username"
+              type="text"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full px-4 py-[10px] border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
 
-          <div>
-          <label className="font-medium" htmlFor="email">Email</label>
-          <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-lg" htmlFor="email">
+              Email
+            </label>
+            <input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-[10px] border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
-          
-          <div>
-          <label className="font-medium" htmlFor="password">Password</label>
-          <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} className="w-full px-4 py-2 border border-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+
+          <div className="flex flex-col gap-1">
+            <label className="font-medium text-lg" htmlFor="password">
+              Password
+            </label>
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-[10px] border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
 
           {authError && <p className="text-red-500 text-sm">{authError}</p>}
 
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700" disabled={authLoading}>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-[10px] mt-2 rounded-lg hover:bg-blue-700 cursor-pointer"
+            disabled={authLoading}
+          >
             {authLoading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 
-        <div className="my-4 text-center text-gray-500">or sign up with</div>
+        <div className="flex items-center justify-between my-4 text-center text-gray-500">
+          <div className="h-[1px] w-[32%] bg-gray-300"></div>
+          <span>or continue with</span>
+          <div className="h-[1px] w-[32%] bg-gray-300"></div>
+        </div>
 
         <div className="flex justify-between gap-3">
-          <button onClick={signInWithGoogle} className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50">
-          <svg
+          <button
+            onClick={signInWithGoogle}
+            className="flex justify-center  shadow-sm items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-lg py-2 hover:bg-gray-50"
+          >
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"
               height="25"
@@ -80,8 +122,11 @@ const Signup = () => {
             <span>Google</span>
           </button>
 
-          <button onClick={signInWithGithub} className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50">
-          <svg
+          <button
+            onClick={signInWithGithub}
+            className="flex justify-center items-center  shadow-sm cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-lg py-2 hover:bg-gray-50"
+          >
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="30"
               height="30"
@@ -95,8 +140,8 @@ const Signup = () => {
             <span>GitHub</span>
           </button>
 
-          <button className="flex justify-center items-center cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-xl py-2 hover:bg-gray-50">
-          <svg
+          <button className="flex justify-center items-center  shadow-sm cursor-pointer gap-2 w-full border-1 border-gray-400 rounded-lg py-2 hover:bg-gray-50">
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"
               height="25"
@@ -117,7 +162,9 @@ const Signup = () => {
 
         <p className="mt-4 text-sm text-center">
           Already have an account?{" "}
-          <a href="/" className="text-blue-600 hover:underline">Log in</a>
+          <a href="/" className="text-blue-600 hover:underline">
+            Log in
+          </a>
         </p>
       </div>
     </div>
